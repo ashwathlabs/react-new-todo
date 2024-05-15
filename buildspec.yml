@@ -24,3 +24,5 @@ phases:
       - docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-cap2:latest
       - echo Writing image definitions file...
       - printf '[{"name":"atzm-cap2-container","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-cap2:latest"}]' > imagedefinitions.json
+artifacts:
+  files: imagedefinitions.json
