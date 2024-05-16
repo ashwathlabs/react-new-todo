@@ -6,22 +6,26 @@ phases:
   pre_build:
     commands:
       - echo logging in to AWS ECR...
-      - aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 962804699607.dkr.ecr.us-west-2.amazonaws.com
+      #- aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 962804699607.dkr.ecr.us-west-2.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin 962804699607.dkr.ecr.us-west-2.amazonaws.com
   build:
     commands:
       - echo build Docker image on `date`
       - docker build -t atzm-capstone2-ecr_repo .
       #- docker build -t atzm-cap2 .
       #- docker tag atzm-cap2:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-cap2:latest
-      - docker tag atzm-capstone2-ecr_repo:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest
+      #- docker tag atzm-capstone2-ecr_repo:latest 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest
+      - docker tag $IMAGE_REPO_NAME:$IMAGE_TAG $IMAGE_REPO_URL:$IMAGE_TAG
   post_build:
     commands:
       - echo build Docker image complete `date`
       - echo push latest Docker images to ECR...
       #- docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-cap2:latest
-      - docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest
+      #- docker push 962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest
+      - docker push $IMAGE_REPO_URL:$IMAGE_TAG
       - echo Writing image definitions file...
       #- printf '[{"name":"atzm-cap2-container","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-cap2:latest"}]' > imagedefinitions.json
-      - printf '[{"name":"atzm-capstone2-container","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest"}]' > imagedefinitions.json
+      #- printf '[{"name":"atzm-capstone2-container","imageUri":"962804699607.dkr.ecr.us-west-2.amazonaws.com/atzm-capstone2-ecr_repo:latest"}]' > imagedefinitions.json
+      - printf '[{"name":"atzm-capstone2-container","imageUri":"$IMAGE_REPO_URL:$IMAGE_TAG"}]' > imagedefinitions.json
 artifacts:
   files: imagedefinitions.json
