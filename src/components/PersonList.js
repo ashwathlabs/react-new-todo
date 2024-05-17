@@ -16,6 +16,7 @@ export default class PersonList extends React.Component {
 
   render() {
     return (
+      <h4>List of persons from S3</h4>
       <ul>
         {
           this.state.persons
